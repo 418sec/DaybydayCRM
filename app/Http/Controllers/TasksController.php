@@ -62,7 +62,7 @@ class TasksController extends Controller
 
         return Datatables::of($tasks)
             ->addColumn('titlelink', function ($tasks) {
-                return '<a href="tasks/' . $tasks->external_id . '" ">' . $tasks->title . '</a>';
+                return '<a href="tasks/' . $tasks->external_id . '" ">' . htmlspecialchars($tasks->title) . '</a>';
             })
             ->editColumn('client', function ($projects) {
                 return $projects->client->company_name;
@@ -84,7 +84,7 @@ class TasksController extends Controller
             })
             ->addColumn('view', function ($tasks) {
                 return '<a href="' . route("tasks.show", $tasks->external_id) . '" class="btn btn-link">' . __('View') .'</a>'
-                . '<a data-toggle="modal" data-id="'. route('tasks.destroy',$tasks->external_id) . '" data-title="'. $tasks->title . '" data-target="#deletion" class="btn btn-link">' . __('Delete') .'</a>'
+                . '<a data-toggle="modal" data-id="'. route('tasks.destroy',$tasks->external_id) . '" data-title="'. htmlspecialchars($tasks->title) . '" data-target="#deletion" class="btn btn-link">' . __('Delete') .'</a>'
                 ;
             })
             ->rawColumns(['titlelink','view', 'status_id'])
