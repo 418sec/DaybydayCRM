@@ -65,7 +65,7 @@ class ClientsController extends Controller
         $clients = Client::select(['external_id', 'company_name', 'vat', 'address']);
         return Datatables::of($clients)
             ->addColumn('namelink', function ($clients) {
-                return '<a href="/clients/' . $clients->external_id . '" ">' . $clients->company_name . '</a>';
+                return '<a href="/clients/' . $clients->external_id . '" ">' . htmlspecialchars($clients->company_name) . '</a>';
             })
             ->addColumn('view', '
                 <a href="{{ route(\'clients.show\', $external_id) }}" class="btn btn-link" >'  . __('View') . '</a>')
@@ -93,7 +93,7 @@ class ClientsController extends Controller
 
         return Datatables::of($tasks)
             ->addColumn('titlelink', function ($tasks) {
-                return '<a href="' . route('tasks.show', $tasks->external_id) . '">' . $tasks->title . '</a>';
+                return '<a href="' . route('tasks.show', $tasks->external_id) . '">' . htmlspecialchars($tasks->title) . '</a>';
             })
             ->editColumn('created_at', function ($tasks) {
                 return $tasks->created_at ? with(new Carbon($tasks->created_at))
@@ -122,7 +122,7 @@ class ClientsController extends Controller
 
         return Datatables::of($projects)
             ->addColumn('titlelink', function ($projects) {
-                return '<a href="' . route('projects.show', $projects->external_id) . '">' . $projects->title . '</a>';
+                return '<a href="' . route('projects.show', $projects->external_id) . '">' . htmlspecialchars($projects->title) . '</a>';
             })
             ->editColumn('created_at', function ($projects) {
                 return $projects->created_at ? with(new Carbon($projects->created_at))
@@ -150,7 +150,7 @@ class ClientsController extends Controller
         )->get();
         return Datatables::of($leads)
             ->addColumn('titlelink', function ($leads) {
-                return '<a href="' . route('leads.show', $leads->external_id) . '">' . $leads->title . '</a>';
+                return '<a href="' . route('leads.show', $leads->external_id) . '">' . htmlspecialchars($leads->title) . '</a>';
             })
             ->editColumn('created_at', function ($leads) {
                 return $leads->created_at ? with(new Carbon($leads->created_at))
