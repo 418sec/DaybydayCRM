@@ -40,11 +40,15 @@ class UsersController extends Controller
 
     public function calendarUsers()
     {
-        return User::with(['department', 'absences' =>  function ($q) {
+        $users= User::with(['department', 'absences' =>  function ($q) {
             return $q->whereBetween('start_at', [today()->subWeeks(2)->startOfDay(), today()->addWeeks(4)->endOfDay()])
                       ->orWhereBetween('end_at', [today()->subWeeks(2)->startOfDay(), today()->addWeeks(4)->endOfDay()]);
         }
         ])->get();
+        foreach($users as $user){
+            $user['name']=htmlspecialchars($user['name']);
+        }
+        return $users;
     }
 
     public function users()
@@ -58,7 +62,7 @@ class UsersController extends Controller
         $users = User::select(['id', 'external_id', 'name', 'email', 'primary_number']);
         return Datatables::of($users)
             ->addColumn('namelink', function ($users) {
-                return '<a href="/users/' . $users->external_id . '" ">' . $users->name . '</a>';
+                return '<a href="/users/' . $users->external_id . '" ">' . htmlspecialchars($users->name) . '</a>';
             })
             ->addColumn('view', function ($user) {
                 return '<a href="' . route("users.show", $user->external_id) . '" class="btn btn-link">' . __('View') .'</a>';
@@ -86,7 +90,7 @@ class UsersController extends Controller
             ->where('user_assigned_id', $id)->get();
         return Datatables::of($tasks)
             ->addColumn('titlelink', function ($tasks) {
-                return '<a href="' . route('tasks.show', $tasks->external_id) . '">' . $tasks->title . '</a>';
+                return '<a href="' . route('tasks.show', $tasks->external_id) . '">' . htmlspecialchars($tasks->title) . '</a>';
             })
             ->editColumn('created_at', function ($tasks) {
                 return $tasks->created_at ? with(new Carbon($tasks->created_at))
@@ -119,7 +123,7 @@ class UsersController extends Controller
             ->where('user_assigned_id', $id)->get();
         return Datatables::of($leads)
             ->addColumn('titlelink', function ($leads) {
-                return '<a href="' . route('leads.show', $leads->external_id) . '">' . $leads->title . '</a>';
+                return '<a href="' . route('leads.show', $leads->external_id) . '">' . htmlspecialchars($leads->title) . '</a>';
             })
             ->editColumn('created_at', function ($leads) {
                 return $leads->created_at ? with(new Carbon($leads->created_at))
@@ -150,7 +154,7 @@ class UsersController extends Controller
         $clients = Client::select(['external_id', 'company_name', 'vat', 'address'])->where('user_id', $id);
         return Datatables::of($clients)
             ->addColumn('clientlink', function ($clients) {
-                return '<a href="' . route('clients.show', $clients->external_id) . '">' . $clients->company_name . '</a>';
+                return '<a href="' . route('clients.show', $clients->external_id) . '">' . htmlspecialchars($clients->company_name) . '</a>';
             })
             ->editColumn('created_at', function ($clients) {
                 return $clients->created_at ? with(new Carbon($clients->created_at))

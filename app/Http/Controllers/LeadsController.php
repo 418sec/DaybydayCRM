@@ -45,7 +45,7 @@ class LeadsController extends Controller
 
         return Datatables::of($leads)
             ->addColumn('titlelink', function ($leads) {
-                return '<a href="'.route('leads.show', $leads->external_id).'">'.$leads->title.'</a>';
+                return '<a href="'.route('leads.show', $leads->external_id).'">'.htmlspecialchars($leads->title).'</a>';
             })
             ->editColumn('client', function ($projects) {
                 return $projects->client->company_name;
@@ -66,7 +66,7 @@ class LeadsController extends Controller
             })
             ->addColumn('view', function ($leads) {
                 return '<a href="' . route("leads.show", $leads->external_id) . '" class="btn btn-link">' . __('View') .'</a>'
-                . '<a data-toggle="modal" data-id="'. route('leads.destroy',$leads->external_id) . '" data-title="'. $leads->title . '" data-target="#deletion" class="btn btn-link">' . __('Delete') .'</a>';
+                . '<a data-toggle="modal" data-id="'. route('leads.destroy',$leads->external_id) . '" data-title="'. htmlspecialchars($leads->title) . '" data-target="#deletion" class="btn btn-link">' . __('Delete') .'</a>';
             })
             ->rawColumns(['titlelink','view', 'status_id'])
             ->make(true);

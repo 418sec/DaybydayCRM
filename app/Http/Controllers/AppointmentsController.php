@@ -20,10 +20,14 @@ class AppointmentsController extends Controller
 
     public function appointmentsJson()
     {
-        return Appointment::with(['user:id,name,external_id', 'user.department:name'])
+        $appointments = Appointment::with(['user:id,name,external_id', 'user.department:name'])
             ->whereBetween('start_at', [today()->subWeeks(2)->startOfDay(), today()->addWeeks(4)->endOfDay()])
             ->orWhereBetween('end_at', [today()->subWeeks(2)->startOfDay(), today()->addWeeks(4)->endOfDay()])
                 ->get();
+        foreach($appointments as $appointment){
+            $appointment['title']=htmlspecialchars($appointment['title']);
+        }
+        return $appointments;
     }
 
     public function update(UpdateAppointmentCalendarRequest $request, Appointment $appointment)
@@ -78,6 +82,7 @@ class AppointmentsController extends Controller
             'user_id' => $user->id,
             'color' => $request->color
         ]);
+        $appointment->title = htmlspecialchars($appointment->title);
         $appointment->user_external_id = $user->external_id;
         $appointment->start_at = $appointment->start_at;
 
