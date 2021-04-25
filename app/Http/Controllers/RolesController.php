@@ -32,12 +32,12 @@ class RolesController extends Controller
         return Datatables::of($roles)
             ->addColumn('namelink', function ($roles) {
                 if ($roles->name == Role::OWNER_ROLE) {
-                    return '<a href="'.route('roles.show', $roles->external_id).'">'.$roles->display_name.'</a>' . '<br>' . __('Extra: Owner is able to do the same as an administrator but also controls billing');
+                    return '<a href="'.route('roles.show', $roles->external_id).'">'.htmlspecialchars($roles->display_name).'</a>' . '<br>' . __('Extra: Owner is able to do the same as an administrator but also controls billing');
                 }
                 if ($roles->name == Role::ADMIN_ROLE) {
-                    return '<a href="'.route('roles.show', $roles->external_id).'">'.$roles->display_name.'</a>' . '<br>' . __('Extra: Administrator is able to update and create departments, integrations, and settings');
+                    return '<a href="'.route('roles.show', $roles->external_id).'">'.htmlspecialchars($roles->display_name).'</a>' . '<br>' . __('Extra: Administrator is able to update and create departments, integrations, and settings');
                 }
-                return '<a href="'.route('roles.show', $roles->external_id).'">'.$roles->display_name.'</a>';
+                return '<a href="'.route('roles.show', $roles->external_id).'">'.htmlspecialchars($roles->display_name).'</a>';
             })
             ->editColumn('permissions', function ($roles) {
                 return $roles->permissions->map(function ($permission) {
